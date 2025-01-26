@@ -4,8 +4,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class Neo4jgrapdbspeingboot3kotlinApplication
-
-fun main(args: Array<String>) {
-	runApplication<Neo4jgrapdbspeingboot3kotlinApplication>(*args)
+class Neo4jgrapdbspeingboot3kotlinApplication {
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            runApplication<Neo4jgrapdbspeingboot3kotlinApplication>(*args)
+        }
+    }
 }
+
+
+

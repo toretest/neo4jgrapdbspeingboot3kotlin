@@ -1,1 +1,23 @@
-spring.application.name=neo4jgrapdbspeingboot3kotlin
+spring:
+  application:
+    name: neo4jgrapdbspeingboot3kotlin
+  data:
+    mongodb:
+      uri: mongodb://localhost/mongodb
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+# see spring-boot-docker-compose
+#services:
+#  mongodb:
+#    image: 'mongo:latest'
+#    environment:
+#      - 'MONGO_INITDB_DATABASE=mydatabase'
+#      - 'MONGO_INITDB_ROOT_PASSWORD=secret'
+#      - 'MONGO_INITDB_ROOT_USERNAME=root'
+#    ports:
+#      - '27017:27017'

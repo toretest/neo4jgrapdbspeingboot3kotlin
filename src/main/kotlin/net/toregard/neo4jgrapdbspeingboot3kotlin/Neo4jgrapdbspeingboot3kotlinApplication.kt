@@ -3,6 +3,7 @@ package net.toregard.neo4jgrapdbspeingboot3kotlin
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
+
 @SpringBootApplication
 class Neo4jgrapdbspeingboot3kotlinApplication {
     companion object {

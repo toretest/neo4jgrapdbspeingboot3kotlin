@@ -1,13 +1,16 @@
 package net.toregard.neo4jgrapdbspeingboot3kotlin.routes.infrastructur.adapter
 
-import com.fasterxml.jackson.annotation.JsonAnySetter
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.index.CompoundIndex
+import org.springframework.data.mongodb.core.index.CompoundIndexes
+import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.*
+import java.time.Instant
 
 @RestController
 @RequestMapping("/routes/api")
@@ -41,15 +44,24 @@ class RouteService(private val routeRepository: RouteRepository) {
 }
 
 @Document(collection = "routes")
-data class Route(
+@CompoundIndexes(
+    CompoundIndex(name = "id_name_idx", def = "{'id': 1, 'name': 1}")
+)
+data class Route (
     @Id
     val id: String,
+    //@Indexed(expireAfter = "60s") // 10 hours
+    //val createdAt: Instant = Instant.now(),
+    //@Indexed(expireAfter = "\${di.collections.routes.deletedAfter}")
+    val createdAt: Instant = Instant.now(),
     val companyId: Int,
     val name: String,
     val modules: List<Module>
+
 )
 
 data class Module(
+    @Id
     val id: String,
     val name: String,
     val type: String,

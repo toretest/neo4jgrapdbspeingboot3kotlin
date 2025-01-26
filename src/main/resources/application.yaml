@@ -4,6 +4,12 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost/mongodb
+      auto-index-creation: true # create indexes automatically ...ttl n´must be set expl..no default!!!
+di:
+  collections:
+    routes:
+      deletedAfter: "60s"
+
 
 springdoc:
   api-docs:

@@ -1,7 +1,7 @@
 package net.toregard.neo4jgrapdbspeingboot3kotlin.routes.infrastructur.configuration
 
 import jakarta.annotation.PostConstruct
-import net.toregard.neo4jgrapdbspeingboot3kotlin.routes.infrastructur.adapter.Route
+import net.toregard.neo4jgrapdbspeingboot3kotlin.routes.domain.Routes
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate
@@ -22,7 +22,7 @@ class MongoConfig(
     @PostConstruct
     fun initIndexes() {
         val expireAfterSeconds = parseDurationToSeconds(deletedAfter)
-        reactiveMongoTemplate.indexOps(Route::class.java).ensureIndex(
+        reactiveMongoTemplate.indexOps(Routes::class.java).ensureIndex(
             org.springframework.data.mongodb.core.index.Index()
                 .on("createdAt", org.springframework.data.domain.Sort.Direction.ASC)
                 .expire(expireAfterSeconds)

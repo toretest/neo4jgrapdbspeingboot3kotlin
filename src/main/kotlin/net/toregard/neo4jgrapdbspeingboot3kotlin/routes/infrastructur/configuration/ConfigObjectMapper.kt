@@ -7,12 +7,12 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import net.toregard.neo4jgrapdbspeingboot3kotlin.routes.infrastructur.adapter.Module
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.web.reactive.config.WebFluxConfigurer
 
+import net.toregard.neo4jgrapdbspeingboot3kotlin.routes.domain.Module
 
 @Configuration
 class ConfigObjectMapper : WebFluxConfigurer {
@@ -45,16 +45,15 @@ class ModuleDeserializer : JsonDeserializer<Module>() {
         val id = node.get("id").asText()
         val name = node.get("name").asText()
         val type = node.get("type").asText()
-        val description = node.get("description").asText()
 
         val additionalAttributes = mutableMapOf<String, Any>()
         node.fields().forEachRemaining { (key, value) ->
-            if (key !in listOf("id", "name", "type", "description")) {
+            if (key !in listOf("id", "name", "type")) {
                 additionalAttributes[key] = mapper.readValue(value.toString())
             }
         }
 
-        return Module(id, name, type, description, additionalAttributes)
+        return Module(id, name, type, additionalAttributes)
     }
 }
 
@@ -64,7 +63,6 @@ class ModuleSerializer : JsonSerializer<Module>() {
         gen.writeStringField("id", module.id)
         gen.writeStringField("name", module.name)
         gen.writeStringField("type", module.type)
-        gen.writeStringField("description", module.description)
         module.additionalAttributes.forEach { (key, value) ->
             gen.writeObjectField(key, value)
         }

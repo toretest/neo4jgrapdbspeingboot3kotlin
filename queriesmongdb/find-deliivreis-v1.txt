@@ -1,0 +1,143 @@
+db.routes.aggregate([
+  {
+    $match: {
+      // 1) Always require this exact date
+      "metadata.date": "2025-01-17",
+
+      // 2) OR: deliveries or route.* in certain lists
+      $or: [
+        // Non-empty households path
+        {
+          "route.modules.addresses.households.customers.deliveries": {
+            $exists: true,
+            $not: { $size: 0 }
+          }
+        },
+        // Non-empty customers path
+        {
+          "route.modules.addresses.customers.deliveries": {
+            $exists: true,
+            $not: { $size: 0 }
+          }
+        },
+
+        // OR one of these route fields in its list
+        { "route.companyId": { $in: [99] } },
+        { "route.regionId": { $in: [401] } },
+        { "route.areaId":  { $in: [40001] } },
+        { "route.number":  { $in: [3310033] } }
+      ]
+    }
+  },
+  {
+    // 2) Flatten logic remains the same
+    $project: {
+      _id: 0,
+      route: 1,
+      metadata: 1,
+
+      // Flatten households path
+      deliveriesFromHouseholds: {
+        $reduce: {
+          input: "$route.modules",
+          initialValue: [],
+          in: {
+            $concatArrays: [
+              "$$value",
+              {
+                $reduce: {
+                  input: "$$this.addresses",
+                  initialValue: [],
+                  in: {
+                    $concatArrays: [
+                      "$$value",
+                      {
+                        $reduce: {
+                          input: "$$this.households",
+                          initialValue: [],
+                          in: {
+                            $concatArrays: [
+                              "$$value",
+                              {
+                                $reduce: {
+                                  input: "$$this.customers",
+                                  initialValue: [],
+                                  in: {
+                                    $concatArrays: [
+                                      "$$value",
+                                      { $ifNull: ["$$this.deliveries", []] }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+
+      // Flatten customers path
+      deliveriesFromCustomers: {
+        $reduce: {
+          input: "$route.modules",
+          initialValue: [],
+          in: {
+            $concatArrays: [
+              "$$value",
+              {
+                $reduce: {
+                  input: "$$this.addresses",
+                  initialValue: [],
+                  in: {
+                    $concatArrays: [
+                      "$$value",
+                      {
+                        $reduce: {
+                          input: "$$this.customers",
+                          initialValue: [],
+                          in: {
+                            $concatArrays: [
+                              "$$value",
+                              { $ifNull: ["$$this.deliveries", []] }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  {
+    // 3) Project desired fields plus merge flattened deliveries
+    $project: {
+      "route.number": 1,
+      "route.name": 1,
+      "route.schema": 1,
+      "route.vehicle": 1,
+      "route.companyId": 1,
+      "route.regionId": 1,
+      "route.areaId": 1,
+      "metadata.date": 1,
+      deliveries: {
+        $concatArrays: [
+          "$deliveriesFromHouseholds",
+          "$deliveriesFromCustomers"
+        ]
+      }
+    }
+  }
+],
+{ allowDiskUse: true });

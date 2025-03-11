@@ -1,0 +1,27 @@
+services:
+#  localstack:
+#    image: localstack/localstack:latest
+#    container_name: localstack
+#    ports:
+#      - "4566:4566"  # LocalStack Gateway
+#      - "4571:4571"  # S3
+#    environment:
+#      - SERVICES=s3,lambda,dynamodb,apigateway
+#      - DEBUG=1
+#      - DATA_DIR=/tmp/localstack/data
+#    volumes:
+#      - "./localstack:/tmp/localstack"
+#  mongodb:
+#    image: 'mongo:latest'
+#    environment:
+#      - 'MONGO_INITDB_DATABASE=mydatabase'
+#      - 'MONGO_INITDB_ROOT_PASSWORD=secret'
+#      - 'MONGO_INITDB_ROOT_USERNAME=root'
+#    ports:
+#      - '27017'
+#  neo4j:
+#    image: 'neo4j:latest'
+#    environment:
+#      - 'NEO4J_AUTH=neo4j/notverysecret'
+#    ports:
+#      - '7687'

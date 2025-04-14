@@ -5,7 +5,6 @@ import net.toregard.neo4jgrapdbspeingboot3kotlin.routes.domain.Routes
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate
-
 /**
  * Added this class to add created automatic removal after a time on collections.
  * Read from the apllicatiomm.yml file
@@ -14,6 +13,7 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate
  */
 
 @Configuration
+
 class MongoConfig(
     val reactiveMongoTemplate: ReactiveMongoTemplate,
     @Value("\${di.collections.routes.deletedAfter}") private val deletedAfter: String
